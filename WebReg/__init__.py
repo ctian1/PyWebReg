@@ -23,7 +23,7 @@ class WebReg(object):
     #driver = None
     timeout = 10
 
-    def __init__(self, URL='https://www.reg.uci.edu/cgi-bin/webreg-redirect.sh', headless=True, window_size=(1366, 768), debug=False):
+    def __init__(self, binary_location, URL='https://www.reg.uci.edu/cgi-bin/webreg-redirect.sh', headless=True, window_size=(1366, 768), debug=False):
         self.debug = debug
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--ignore-certificate-errors')
@@ -31,8 +31,7 @@ class WebReg(object):
         chrome_options.add_argument("--disable-extensions")
         if headless:
             chrome_options.add_argument("--headless")
-        #chrome_options.binary_location = "/usr/bin/chromium"
-        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome(binary_location, options=chrome_options)
         self.driver.set_window_size(
             window_size[0], window_size[1], self.driver.window_handles[0])
         self.driver.get(URL)
@@ -190,6 +189,7 @@ class WebReg(object):
         status = self._check_operation_status(default='ok')
         if not status == 'ok':
             logging.warning('Course Operation Failed: {}'.format(status))
+            return []
         try:
             return self.get_study_list()
         except:
